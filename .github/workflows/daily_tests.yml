@@ -4,6 +4,7 @@
     on:
       schedule:
         - cron: '0 6 * * *'
+      workflow_dispatch:  # Added workflow_dispatch to enable manual triggering
 
     jobs:
       test:
