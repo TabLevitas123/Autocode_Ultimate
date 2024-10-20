@@ -1,0 +1,19 @@
+
+    name: Performance Tests
+
+    on:
+      pull_request:
+        branches:
+          - main
+      workflow_dispatch:
+
+    jobs:
+      performance:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Run Performance Tests
+          run: |
+            python -m pytest --performance
+    
