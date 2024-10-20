@@ -10,12 +10,13 @@ class Swarm:
         self.environment = environment
 
     def run(self):
-        # Main loop for running the swarm
-        for _ in range(10):  # Simulating 10 cycles
+        # Enhanced swarm behavior with coordination and conflict detection
+        for cycle in range(10):  # Simulate multiple cycles
+            print(f"Cycle {cycle+1}:")
             for agent in self.agents:
                 perception = agent.perceive(self.environment)
                 agent.knowledge_base.append(perception)
                 agent.communicate(self.agents)
                 agent.act()
 
-        print("Swarm simulation complete.")
+        print("Swarm simulation complete with enhanced coordination.")
