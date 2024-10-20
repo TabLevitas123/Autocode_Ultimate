@@ -5,6 +5,7 @@
       push:
         branches:
           - main
+      workflow_dispatch:  # Added workflow_dispatch to enable manual triggering
 
     jobs:
       rolling_update:
