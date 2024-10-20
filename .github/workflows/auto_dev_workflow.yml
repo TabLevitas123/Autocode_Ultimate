@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process
+name: Automated Software Development Process with Detailed Logging
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -28,21 +28,21 @@ jobs:
 
     - name: Auto-enrich project on iteration ${{ matrix.iteration }}
       run: |
-        # Python or other language script to auto-enrich the project based on user_description
-        echo "Enriching the project based on user input..."
+        echo "Enriching the project at iteration ${{ matrix.iteration }}..."
         python auto_enrich.py --iteration ${{ matrix.iteration }} --description "${{ needs.prompt_user.outputs.user_description }}"
-
+        echo "Auto-enrichment completed for iteration ${{ matrix.iteration }}."
+        
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
-        # Run tests and perform bug checking
-        echo "Running tests and performing bug checks..."
+        echo "Running tests and bug check at iteration ${{ matrix.iteration }}..."
         pytest
+        echo "Tests completed for iteration ${{ matrix.iteration }}."
 
     - name: Auto-correct errors (if any)
       run: |
-        # Auto-correct script or tool to fix any detected issues
-        echo "Auto-correcting errors based on test results..."
+        echo "Checking for errors to auto-correct..."
         python auto_correct.py
+        echo "Auto-correction completed for iteration ${{ matrix.iteration }}."
 
   finalize_project:
     needs: enrich_and_test
@@ -50,9 +50,9 @@ jobs:
     steps:
     - name: Finalize project and present to user
       run: |
-        echo "Finalizing the project with all enrichments and corrections applied..."
-        # Final packaging or deployment process
+        echo "Finalizing the project after all iterations..."
         python finalize_project.py
+        echo "Project finalized."
 
     - name: Notify user of completed project
       run: echo "Your enhanced and fully developed project is ready!"
