@@ -1,0 +1,17 @@
+
+    name: Disaster Recovery
+
+    on:
+      push:
+        branches:
+          - main
+
+    jobs:
+      recovery:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Run Disaster Recovery Plan
+          run: echo "Executing disaster recovery process."
+    
