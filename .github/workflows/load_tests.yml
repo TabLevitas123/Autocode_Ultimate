@@ -1,0 +1,16 @@
+
+    name: Load Testing
+
+    on:
+      workflow_dispatch:
+
+    jobs:
+      load_test:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Run Load Tests
+          run: |
+            locust -f locustfile.py --headless -u 100 -r 10
+    
