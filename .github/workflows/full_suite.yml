@@ -1,35 +1,62 @@
 
-name: Full Suite Deployment
+name: Full Suite Deployment with Advanced Enhancements
+
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 5 * * *'  # Scheduled runs every day at 5 AM
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.7', '3.8', '3.9', '3.10']
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up Python
+    - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
+        python-version: ${{ matrix.python-version }}
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run tests
+    - name: Run tests in parallel
       run: |
-        pytest
+        pytest -n auto
+
+  security-audit:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run CodeQL Analysis
+      uses: github/codeql-action/analyze@v2
+      with:
+        languages: python
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Deploy to Production
-      run: echo "Deployment process would go here."
+      run: echo "Deployment to Production would occur here."
 
+  slack_notification:
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+    - name: Send Slack Notification
+      uses: slackapi/slack-github-action@v1.18.0
+      with:
+        slack-token: ${{ secrets.SLACK_BOT_TOKEN }}
+        channel-id: 'deployments'
+        text: 'Deployment Failed'
