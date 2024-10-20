@@ -1,0 +1,13 @@
+
+    name: Infrastructure Health Check
+
+    on:
+      workflow_dispatch:
+
+    jobs:
+      health_check:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Run Infrastructure Health Check
+          run: echo "Checking infrastructure health."
+    
