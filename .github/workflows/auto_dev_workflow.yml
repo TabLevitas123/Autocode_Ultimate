@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Detailed Logging
+name: Automated Software Development Process with Additional Logs and Structure Refinement
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -34,22 +34,26 @@ jobs:
 
     - name: Auto-enrich project on iteration ${{ matrix.iteration }}
       run: |
-        echo "Enriching the project at iteration ${{ matrix.iteration }}..."
+        echo "Starting enrichment for iteration ${{ matrix.iteration }}..."
         python auto_enrich.py --iteration ${{ matrix.iteration }} --description "${{ needs.prompt_user.outputs.user_description }}"
-        echo "Auto-enrichment completed for iteration ${{ matrix.iteration }}."
-        
+        echo "Enrichment complete for iteration ${{ matrix.iteration }}."
+        echo "Logs from enrichment:"
+        cat enrichment_logs.txt  # Log added for detailed enrichment results
+
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
-        echo "Running tests and bug check at iteration ${{ matrix.iteration }}..."
+        echo "Running tests for iteration ${{ matrix.iteration }}..."
         pytest > logs.txt
-        cat logs.txt  # Added to print detailed logs directly
+        echo "Test logs:"
+        cat logs.txt  # Added to print detailed test logs
         echo "Tests completed for iteration ${{ matrix.iteration }}."
 
     - name: Auto-correct errors (if any)
       run: |
-        echo "Checking for errors to auto-correct..."
+        echo "Checking for errors in iteration ${{ matrix.iteration }}..."
         python auto_correct.py
-        echo "Auto-correction completed for iteration ${{ matrix.iteration }}."
+        echo "Auto-correction results for iteration ${{ matrix.iteration }}..."
+        cat auto_correction_logs.txt  # Log added to capture correction attempts
       continue-on-error: true
 
     - name: Upload logs to GPT for further correction if needed
@@ -65,9 +69,6 @@ jobs:
     steps:
     - name: Finalize project and present to user
       run: |
-        echo "Finalizing the project after all iterations..."
+        echo "Finalizing project..."
         python finalize_project.py
         echo "Project finalized."
-
-    - name: Notify user of completed project
-      run: echo "Your enhanced and fully developed project is ready!"
