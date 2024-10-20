@@ -1,0 +1,19 @@
+
+    name: Linting Check
+
+    on:
+      pull_request:
+        branches:
+          - main
+
+    jobs:
+      lint:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Run Linting
+          run: |
+            pip install flake8
+            flake8 .
+    
