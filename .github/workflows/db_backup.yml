@@ -1,0 +1,16 @@
+
+    name: Database Backup
+
+    on:
+      schedule:
+        - cron: '0 2 * * *'  # Backup every day at 2 AM
+
+    jobs:
+      backup:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Backup Database
+          run: |
+            pg_dump -h $DB_HOST -U $DB_USER -F c -b -v -f backup.sql $DB_NAME
+            tar -czvf backup.tar.gz backup.sql
+    
