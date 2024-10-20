@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Detailed Logging
+name: Automated Software Development Process with Auto-Correction
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -35,7 +35,7 @@ jobs:
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
         echo "Running tests and bug check at iteration ${{ matrix.iteration }}..."
-        pytest
+        pytest > logs.txt
         echo "Tests completed for iteration ${{ matrix.iteration }}."
 
     - name: Auto-correct errors (if any)
@@ -43,6 +43,14 @@ jobs:
         echo "Checking for errors to auto-correct..."
         python auto_correct.py
         echo "Auto-correction completed for iteration ${{ matrix.iteration }}."
+      continue-on-error: true
+
+    - name: Upload logs to GPT for further correction if needed
+      if: failure()  # Trigger this if auto-correction fails
+      uses: actions/upload-artifact@v2
+      with:
+        name: logs
+        path: logs.txt
 
   finalize_project:
     needs: enrich_and_test
