@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Auto-Correction
+name: Automated Software Development Process with Dependencies and Auto-Correction
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -25,6 +25,12 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v2
+
+    - name: Install dependencies  # Install necessary dependencies
+      run: |
+        echo "Installing necessary dependencies..."
+        pip install -r requirements.txt
+        echo "Dependencies installed."
 
     - name: Auto-enrich project on iteration ${{ matrix.iteration }}
       run: |
