@@ -1,0 +1,19 @@
+
+    name: Security Scan
+
+    on:
+      push:
+        branches:
+          - main
+
+    jobs:
+      security:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Run Security Scan
+          run: |
+            pip install bandit
+            bandit -r .
+    
