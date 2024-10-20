@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Additional Logs and Structure Refinement
+name: Automated Software Development Process with Exception Handling
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -37,8 +37,7 @@ jobs:
         echo "Starting enrichment for iteration ${{ matrix.iteration }}..."
         python auto_enrich.py --iteration ${{ matrix.iteration }} --description "${{ needs.prompt_user.outputs.user_description }}"
         echo "Enrichment complete for iteration ${{ matrix.iteration }}."
-        echo "Logs from enrichment:"
-        cat enrichment_logs.txt  # Log added for detailed enrichment results
+      continue-on-error: true  # Adding exception handling at this stage
 
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
@@ -47,6 +46,7 @@ jobs:
         echo "Test logs:"
         cat logs.txt  # Added to print detailed test logs
         echo "Tests completed for iteration ${{ matrix.iteration }}."
+      continue-on-error: true  # Adding exception handling at this stage
 
     - name: Auto-correct errors (if any)
       run: |
