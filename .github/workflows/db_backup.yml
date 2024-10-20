@@ -4,6 +4,7 @@
     on:
       schedule:
         - cron: '0 2 * * *'  # Backup every day at 2 AM
+      workflow_dispatch:  # Added workflow_dispatch to enable manual triggering
 
     jobs:
       backup:
