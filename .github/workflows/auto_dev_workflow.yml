@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Dependencies and Auto-Correction
+name: Automated Software Development Process with Detailed Logging
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -26,7 +26,7 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    - name: Install dependencies  # Install necessary dependencies
+    - name: Install dependencies
       run: |
         echo "Installing necessary dependencies..."
         pip install -r requirements.txt
@@ -42,6 +42,7 @@ jobs:
       run: |
         echo "Running tests and bug check at iteration ${{ matrix.iteration }}..."
         pytest > logs.txt
+        cat logs.txt  # Added to print detailed logs directly
         echo "Tests completed for iteration ${{ matrix.iteration }}."
 
     - name: Auto-correct errors (if any)
@@ -52,7 +53,7 @@ jobs:
       continue-on-error: true
 
     - name: Upload logs to GPT for further correction if needed
-      if: failure()  # Trigger this if auto-correction fails
+      if: failure()
       uses: actions/upload-artifact@v2
       with:
         name: logs
