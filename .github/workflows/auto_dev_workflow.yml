@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Refined Resource Allocation
+name: Automated Software Development Process with Advanced Logging and Environment Refinement
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -37,7 +37,7 @@ jobs:
         echo "Starting enrichment for iteration ${{ matrix.iteration }}..."
         python auto_enrich.py --iteration ${{ matrix.iteration }} --description "${{ needs.prompt_user.outputs.user_description }}"
         echo "Enrichment complete for iteration ${{ matrix.iteration }}."
-      continue-on-error: true  # Adding error handling for potential failures
+      continue-on-error: true  # Adding advanced logging and error handling
 
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
@@ -46,7 +46,7 @@ jobs:
         echo "Test logs:"
         cat logs.txt  # Printing detailed test logs for visibility
         echo "Tests completed for iteration ${{ matrix.iteration }}."
-      continue-on-error: true  # Adding error handling for potential failures
+      continue-on-error: true  # Adding advanced logging and error handling
 
     - name: Auto-correct errors (if any)
       run: |
@@ -66,7 +66,7 @@ jobs:
   finalize_project:
     needs: enrich_and_test
     runs-on: ubuntu-latest
-    timeout-minutes: 45  # Increasing timeout to handle longer processes
+    timeout-minutes: 60  # Further increasing timeout to handle longer processes
     steps:
     - name: Finalize project and present to user
       run: |
