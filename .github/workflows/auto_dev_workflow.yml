@@ -1,5 +1,5 @@
 
-name: Automated Software Development Process with Advanced Logging and Environment Refinement
+name: Automated Software Development Process with External Service Handling and Retries
 
 on:
   workflow_dispatch:  # Allows manual triggering for the initial user input
@@ -37,7 +37,7 @@ jobs:
         echo "Starting enrichment for iteration ${{ matrix.iteration }}..."
         python auto_enrich.py --iteration ${{ matrix.iteration }} --description "${{ needs.prompt_user.outputs.user_description }}"
         echo "Enrichment complete for iteration ${{ matrix.iteration }}."
-      continue-on-error: true  # Adding advanced logging and error handling
+      continue-on-error: true
 
     - name: Test and Bug Check at Stage ${{ matrix.iteration }}
       run: |
@@ -46,7 +46,26 @@ jobs:
         echo "Test logs:"
         cat logs.txt  # Printing detailed test logs for visibility
         echo "Tests completed for iteration ${{ matrix.iteration }}."
-      continue-on-error: true  # Adding advanced logging and error handling
+      continue-on-error: true
+
+    - name: Retry external service calls if failures occur
+      run: |
+        echo "Checking external services..."
+        retry_count=0
+        while [ $retry_count -lt 3 ]; do
+          if python external_service_check.py; then
+            echo "External service check passed."
+            break
+          else
+            echo "External service failure. Retrying..."
+            retry_count=$((retry_count+1))
+            sleep 5  # Wait before retrying
+          fi
+        done
+        if [ $retry_count -eq 3 ]; then
+          echo "External service failure after 3 retries."
+          exit 1  # Fail the step if retries exceeded
+        fi
 
     - name: Auto-correct errors (if any)
       run: |
